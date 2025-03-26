@@ -4,7 +4,7 @@ import { Task } from "@lit/task";
 import { historyContext } from "./history-provider";
 import { consume } from "@lit/context";
 import { BrowserHistory } from "history";
-import { capitalizeFirstLetter, stringToColour } from "./utils";
+import { capitalizeFirstLetter } from "./utils";
 import "./pokemon-type-color";
 
 const fetchPokemonTypes = async (): Promise<{
