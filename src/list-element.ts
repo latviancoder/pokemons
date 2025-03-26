@@ -60,7 +60,7 @@ export class ListElement extends LitElement {
     args: () => [this.types],
   });
 
-  private _onPokermonClick(e: MouseEvent, name: string) {
+  private _onPokemonClick(e: MouseEvent, name: string) {
     e.preventDefault();
     this.history?.push(`/pokemon/${name}`);
   }
@@ -68,27 +68,27 @@ export class ListElement extends LitElement {
   private _renderResults(results: Pokemon[]) {
     return html` <ul class="pokemon-list">
       ${results.map(
-        (result) =>
+        ({ name, types, sprites }) =>
           html`<li class="card">
             <div
+              role="img"
+              aria-label="${name} official artwork"
               class="card-image"
-              style="background-image: url(${result.sprites.other[
-                "official-artwork"
-              ].front_default})"
+              style="background-image: url(${sprites.other["official-artwork"]
+                .front_default})"
             ></div>
 
             <footer class="card-footer">
               <a
                 class="card-link"
-                href="/pokemon/${result.name}"
-                @click=${(e: MouseEvent) =>
-                  this._onPokermonClick(e, result.name)}
+                href="/pokemon/${name}"
+                @click=${(e: MouseEvent) => this._onPokemonClick(e, name)}
               >
-                ${capitalizeFirstLetter(result.name)}</a
-              >
+                ${capitalizeFirstLetter(name)}
+              </a>
 
               <div class="pokemon-card-types">
-                ${result.types.map(
+                ${types.map(
                   ({ type }) =>
                     html`<pokemon-type-color
                       type=${type.name}

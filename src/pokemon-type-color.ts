@@ -13,6 +13,7 @@ export class PokemonTypeColor extends LitElement {
   render() {
     return html`
       <div
+        aria-description="Type: ${this.type}"
         style="background-color: ${stringToColour(this.type)}"
         class="type-color"
       ></div>
