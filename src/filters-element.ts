@@ -47,32 +47,33 @@ export class FiltersElement extends LitElement {
   }
 
   private _renderResults(value: { results: { name: string }[] }) {
-    return html` <ul>
-      ${value.results.map(
-        (type) => html`<li>
-          <label>
-            <input
-              type="checkbox"
-              .checked=${this.types.includes(type.name)}
-              @change=${(e: Event) =>
-                this._handleTypeChange(
-                  (e.target as HTMLInputElement).checked,
-                  type.name
-                )}
-            />
-            ${capitalizeFirstLetter(type.name)}
-            <pokemon-type-color type=${type.name}></pokemon-type-color>
-          </label>
-        </li>`
-      )}
-    </ul>`;
+    return value.results.map(
+      ({ name }) => html`<li>
+        <input
+          id="checkbox-${name}"
+          type="checkbox"
+          .checked=${this.types.includes(name)}
+          @change=${(e: Event) =>
+            this._handleTypeChange(
+              (e.target as HTMLInputElement).checked,
+              name
+            )}
+        />
+        <label for="checkbox-${name}">${capitalizeFirstLetter(name)}</label>
+        <pokemon-type-color type=${name}></pokemon-type-color>
+      </li>`
+    );
   }
 
   render() {
     return this._fetchPokemonTypes.render({
       pending: () => html`Loading...`,
       error: () => html`Oops, something went wrong`,
-      complete: (value) => this._renderResults(value),
+      complete: (value) => html`
+        <ul>
+          ${this._renderResults(value)}
+        </ul>
+      `,
     });
   }
 
@@ -87,7 +88,7 @@ export class FiltersElement extends LitElement {
       top: 0.5rem;
     }
 
-    label {
+    li {
       display: flex;
       align-items: center;
       gap: 0.3rem;

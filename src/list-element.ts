@@ -23,6 +23,7 @@ type Pokemon = {
 };
 
 const fetchPokemon = async (types: string[]): Promise<Pokemon[]> => {
+  // ideally should be paginated, but as this api doesn't allow filtering
   const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100");
 
   if (!response.ok) {
@@ -59,31 +60,32 @@ export class ListElement extends LitElement {
     args: () => [this.types],
   });
 
-  private _onPokermonClick(name: string) {
+  private _onPokermonClick(e: MouseEvent, name: string) {
+    e.preventDefault();
     this.history?.push(`/pokemon/${name}`);
   }
 
   private _renderResults(results: Pokemon[]) {
-    if (!results.length) {
-      return html`<div class="pokemon-list">No pokemons found</div>`;
-    }
-
-    return html` <div class="pokemon-list">
+    return html` <ul class="pokemon-list">
       ${results.map(
         (result) =>
-          html`<article
-            class="pokemon-card"
-            @click=${() => this._onPokermonClick(result.name)}
-          >
+          html`<li class="card">
             <div
-              class="pokemon-card-image"
+              class="card-image"
               style="background-image: url(${result.sprites.other[
                 "official-artwork"
               ].front_default})"
             ></div>
 
-            <div class="pokemon-card-footer">
-              ${capitalizeFirstLetter(result.name)}
+            <footer class="card-footer">
+              <a
+                class="card-link"
+                href="/pokemon/${result.name}"
+                @click=${(e: MouseEvent) =>
+                  this._onPokermonClick(e, result.name)}
+              >
+                ${capitalizeFirstLetter(result.name)}</a
+              >
 
               <div class="pokemon-card-types">
                 ${result.types.map(
@@ -93,17 +95,27 @@ export class ListElement extends LitElement {
                     ></pokemon-type-color>`
                 )}
               </div>
-            </div>
-          </article>`
+            </footer>
+          </li>`
       )}
-    </div>`;
+    </ul>`;
   }
 
   render() {
     return this._fetchPokemon.render({
-      pending: () => html`Loading...`,
+      pending: () =>
+        html`<div role="region" aria-live="polite" aria-busy="true">
+          Loading...
+        </div>`,
       error: () => html`Oops, something went wrong`,
-      complete: (value) => this._renderResults(value),
+      complete: (value) => html`
+        <div role="region" aria-live="polite">
+          ${this._renderResults(value)}
+        </div>
+      `,
+      noData: () => html`<div role="region" aria-live="polite">
+        No pokemons found
+      </div>`,
     });
   }
 
@@ -112,23 +124,21 @@ export class ListElement extends LitElement {
       display: grid;
       grid-template-columns: auto auto auto auto;
       gap: 2rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
 
-    .pokemon-card {
-      cursor: pointer;
+    .card {
       width: 150px;
       height: 150px;
       background-size: cover;
       border: 2px solid #000;
       display: flex;
       flex-direction: column;
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
     }
 
-    .pokemon-card-image {
+    .card-image {
       width: 100%;
       background-size: contain;
       background-position: center;
@@ -136,7 +146,7 @@ export class ListElement extends LitElement {
       flex: 1;
     }
 
-    .pokemon-card-footer {
+    .card-footer {
       border-top: 2px solid #000;
       padding: 0.3rem;
       display: flex;
@@ -144,9 +154,18 @@ export class ListElement extends LitElement {
       justify-content: space-between;
     }
 
-    .pokemon-card-types {
+    .card-types {
       display: flex;
       gap: 0.3rem;
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: #000;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   `;
 }

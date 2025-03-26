@@ -49,12 +49,14 @@ export class Pokeshop extends LitElement {
       this.history?.location.pathname === "/iframe.html"
     ) {
       return html`<div class="wrapper">
-        <h1>${this.shopTitle}</h1>
+        <header>
+          <h1>${this.shopTitle}</h1>
+        </header>
 
-        <div class="content-container">
+        <main class="content-container">
           <filters-element .types=${this._types}></filters-element>
           <list-element .types=${this._types}></list-element>
-        </div>
+        </main>
       </div>`;
     }
 
