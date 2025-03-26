@@ -109,14 +109,13 @@ export class ListElement extends LitElement {
       error: () => html`<div role="alert">Oops, something went wrong</div>`,
       complete: (value) => html`
         <div role="region" aria-live="polite">
-          <ul class="pokemon-list">
-            ${this._renderResults(value)}
-          </ul>
+          ${value.length
+            ? html`<ul class="pokemon-list">
+                ${this._renderResults(value)}
+              </ul>`
+            : html`No pokemons found`}
         </div>
       `,
-      noData: () => html`<div role="region" aria-live="polite">
-        No pokemons found
-      </div>`,
     });
   }
 
