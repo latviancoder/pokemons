@@ -87,7 +87,7 @@ export class ListElement extends LitElement {
               ${capitalizeFirstLetter(name)}
             </a>
 
-            <div class="pokemon-card-types">
+            <div class="card-types">
               ${types.map(
                 ({ type }) =>
                   html`<pokemon-type-color
