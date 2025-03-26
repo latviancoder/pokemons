@@ -67,12 +67,19 @@ export class FiltersElement extends LitElement {
 
   render() {
     return this._fetchPokemonTypes.render({
-      pending: () => html`Loading...`,
-      error: () => html`Oops, something went wrong`,
+      pending: () => html`<div
+        role="region"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        Loading...
+      </div>`,
       complete: (value) => html`
-        <ul>
-          ${this._renderResults(value)}
-        </ul>
+        <div role="region" aria-live="polite">
+          <ul>
+            ${this._renderResults(value)}
+          </ul>
+        </div>
       `,
     });
   }

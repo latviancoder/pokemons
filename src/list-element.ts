@@ -66,39 +66,37 @@ export class ListElement extends LitElement {
   }
 
   private _renderResults(results: Pokemon[]) {
-    return html` <ul class="pokemon-list">
-      ${results.map(
-        ({ name, types, sprites }) =>
-          html`<li class="card">
-            <div
-              role="img"
-              aria-label="${name} official artwork"
-              class="card-image"
-              style="background-image: url(${sprites.other["official-artwork"]
-                .front_default})"
-            ></div>
+    return results.map(
+      ({ name, types, sprites }) =>
+        html`<li class="card">
+          <div
+            role="img"
+            aria-label="${name} official artwork"
+            class="card-image"
+            style="background-image: url(${sprites.other["official-artwork"]
+              .front_default})"
+          ></div>
 
-            <footer class="card-footer">
-              <a
-                class="card-link"
-                href="/pokemon/${name}"
-                @click=${(e: MouseEvent) => this._onPokemonClick(e, name)}
-              >
-                ${capitalizeFirstLetter(name)}
-              </a>
+          <footer class="card-footer">
+            <a
+              class="card-link"
+              href="/pokemon/${name}"
+              @click=${(e: MouseEvent) => this._onPokemonClick(e, name)}
+            >
+              ${capitalizeFirstLetter(name)}
+            </a>
 
-              <div class="pokemon-card-types">
-                ${types.map(
-                  ({ type }) =>
-                    html`<pokemon-type-color
-                      type=${type.name}
-                    ></pokemon-type-color>`
-                )}
-              </div>
-            </footer>
-          </li>`
-      )}
-    </ul>`;
+            <div class="pokemon-card-types">
+              ${types.map(
+                ({ type }) =>
+                  html`<pokemon-type-color
+                    type=${type.name}
+                  ></pokemon-type-color>`
+              )}
+            </div>
+          </footer>
+        </li>`
+    );
   }
 
   render() {
@@ -107,10 +105,12 @@ export class ListElement extends LitElement {
         html`<div role="region" aria-live="polite" aria-busy="true">
           Loading...
         </div>`,
-      error: () => html`Oops, something went wrong`,
+      error: () => html`<div role="alert">Oops, something went wrong</div>`,
       complete: (value) => html`
         <div role="region" aria-live="polite">
-          ${this._renderResults(value)}
+          <ul class="pokemon-list">
+            ${this._renderResults(value)}
+          </ul>
         </div>
       `,
       noData: () => html`<div role="region" aria-live="polite">
