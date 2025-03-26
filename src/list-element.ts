@@ -82,6 +82,7 @@ export class ListElement extends LitElement {
               class="card-link"
               href="/pokemon/${name}"
               @click=${(e: MouseEvent) => this._onPokemonClick(e, name)}
+              aria-label="View details for ${name}"
             >
               ${capitalizeFirstLetter(name)}
             </a>

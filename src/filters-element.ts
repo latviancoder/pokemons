@@ -58,9 +58,13 @@ export class FiltersElement extends LitElement {
               (e.target as HTMLInputElement).checked,
               name
             )}
+          aria-label="Filter by ${name} type"
         />
         <label for="checkbox-${name}">${capitalizeFirstLetter(name)}</label>
-        <pokemon-type-color type=${name}></pokemon-type-color>
+        <pokemon-type-color
+          type=${name}
+          aria-hidden="true"
+        ></pokemon-type-color>
       </li>`
     );
   }
